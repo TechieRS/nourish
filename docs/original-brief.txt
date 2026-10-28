@@ -1,0 +1,1594 @@
+# ROLE AND RESPONSIBILITY
+
+Act as a world-class Senior Full-Stack Software Engineer, Principal Software Architect, Senior Mobile UI/UX Designer, Product Manager, and QA Engineer with more than 20 years of combined industry-level expertise.
+
+You have extensive experience designing and building premium consumer applications comparable in quality to modern wellness, healthcare, lifestyle, and appointment-booking products.
+
+Your responsibility is to design, architect, develop, test, and prepare for deployment a complete, polished, mobile-first wellness appointment management application.
+
+Think like an experienced product engineer, not someone completing a basic CRUD assignment.
+
+Prioritize:
+
+1. Exceptional UI/UX.
+2. Real functionality.
+3. Clean, maintainable architecture.
+4. Mobile-first responsive design.
+5. Reliable data synchronization.
+6. Database integrity.
+7. Excellent accessibility.
+8. Thoughtful microinteractions.
+9. Production readiness.
+10. Complete assignment compliance.
+
+Do not generate a generic admin dashboard or basic college project.
+
+Build something that feels like a genuine consumer wellness product.
+
+---
+
+# 1. PROJECT OVERVIEW
+
+## Product Name
+
+Nourish
+
+## Tagline
+
+Your wellness journey, beautifully organized.
+
+## Product Category
+
+Wellness Consultation and Appointment Management Platform.
+
+## Target Users
+
+Two types of users:
+
+**Client:** An everyday person booking consultations with a nutritionist.
+
+**Nutritionist:** A wellness professional managing consultations, appointment statuses, and client attendance.
+
+## Primary Problem
+
+A nutritionist manages appointments through WhatsApp and Excel.
+
+Approximately 25% of clients fail to attend scheduled consultations.
+
+The nutritionist only discovers their absence after waiting for them.
+
+The current workflow creates:
+
+- Wasted consultation slots.
+- Lost revenue opportunities.
+- Manual scheduling work.
+- Double-booking risks.
+- Poor visibility into upcoming attendance.
+- Difficulty tracking appointments.
+- Inconsistent client communication.
+
+## Product Solution
+
+Develop a beautifully designed appointment-booking platform where clients can book, reschedule, cancel, and confirm consultations.
+
+The nutritionist should be able to manage appointments through a connected dashboard.
+
+Both interfaces must use the same database.
+
+The application should provide appointment confirmation functionality to help reduce no-shows.
+
+The experience should be simple enough for a nontechnical user.
+
+---
+
+# 2. MANDATORY TECHNOLOGY STACK
+
+Use the following technologies.
+
+## Frontend
+
+- React
+- Vite
+- TypeScript
+- Chakra UI
+- React Router
+- React Hook Form
+- Zod
+- TanStack Query
+- Lucide React
+- Framer Motion or Motion for React
+- date-fns
+
+## Backend
+
+- Python
+- FastAPI
+- Pydantic
+- SQLAlchemy
+- Alembic
+- Uvicorn
+
+## Database
+
+- PostgreSQL
+
+## Deployment
+
+- Vercel for frontend.
+- Render for backend.
+- Supabase-hosted PostgreSQL database.
+
+## Additional
+
+- Git
+- GitHub
+- REST APIs
+- PWA support
+- Environment variables
+
+## Strict Restrictions
+
+DO NOT use Tailwind CSS.
+
+DO NOT use Bootstrap.
+
+DO NOT use Firebase as the primary database.
+
+DO NOT rely on localStorage as the source of truth for appointments.
+
+DO NOT create fake backend functionality.
+
+DO NOT use static mock data for real booking operations.
+
+DO NOT introduce unnecessary microservices.
+
+DO NOT implement complex authentication because the assignment requires public access without login.
+
+Use Chakra UI for the component system and styling.
+
+Use custom CSS only where necessary.
+
+---
+
+# 3. PRODUCT DESIGN PHILOSOPHY
+
+This is extremely important.
+
+The application must feel like a premium wellness mobile application.
+
+Avoid the appearance of a typical enterprise dashboard.
+
+The interface should communicate:
+
+- Calmness.
+- Trust.
+- Wellness.
+- Warmth.
+- Simplicity.
+- Elegance.
+- Professionalism.
+- Clarity.
+
+Use generous spacing, soft colors, rounded components, attractive typography, and carefully designed interactions.
+
+## Visual Inspiration
+
+Take design inspiration from modern consumer wellness applications, premium appointment platforms, and minimalist lifestyle products.
+
+Do not directly copy an existing product.
+
+Create an original visual identity.
+
+## Color Palette
+
+Primary Sage Green:
+
+#557C68
+
+Deep Forest Green:
+
+#294D3B
+
+Soft Sage:
+
+#E6EFE8
+
+Warm Ivory:
+
+#FAF9F6
+
+White:
+
+#FFFFFF
+
+Soft Peach:
+
+#F7E5DA
+
+Muted Gray:
+
+#78847D
+
+Dark Text:
+
+#26352D
+
+Success Green:
+
+#2F855A
+
+Warning Amber:
+
+#D69E2E
+
+Error Coral:
+
+#D96C6C
+
+Use colors consistently through a centralized design system.
+
+## Typography
+
+Use a modern, readable font combination.
+
+Suggested:
+
+Headings: DM Sans
+
+Body: Inter
+
+Use appropriate font weights and a consistent typography scale.
+
+## Components
+
+Design reusable components such as:
+
+- AppointmentCard
+- StatusBadge
+- DatePicker
+- TimeSlotPicker
+- ConfirmationCard
+- ReminderBanner
+- PrimaryButton
+- SecondaryButton
+- BottomNavigation
+- AppHeader
+- EmptyState
+- LoadingSkeleton
+- ToastNotification
+- ConfirmationDialog
+- AppointmentTimeline
+
+Every component should have consistent spacing, radius, and interaction behavior.
+
+---
+
+# 4. MOBILE-FIRST APPLICATION DESIGN
+
+The primary experience must be optimized for smartphones.
+
+Target widths:
+
+- 320px
+- 375px
+- 390px
+- 430px
+- 768px
+- 1024px
+- 1440px
+
+The application must not produce horizontal overflow.
+
+Touch targets should be comfortably sized.
+
+Use a mobile bottom navigation bar.
+
+Suggested navigation:
+
+Home | Book | Appointments | Profile
+
+On desktop, adapt the navigation appropriately.
+
+Do not simply stretch mobile cards across the entire desktop screen.
+
+Use responsive layouts that feel intentionally designed.
+
+## PWA Requirements
+
+Make the application installable where supported.
+
+Include:
+
+- Web app manifest.
+- Application name.
+- Theme color.
+- App icons.
+- Appropriate mobile viewport configuration.
+- Safe-area-aware navigation.
+
+The PWA must not cache appointment API responses in a way that causes stale availability or booking data.
+
+---
+
+# 5. CLIENT APPLICATION
+
+Build the following screens.
+
+## SCREEN 1: Welcome / Home
+
+Create a welcoming home screen.
+
+Example:
+
+"Good morning, Riya 🌿"
+
+"Your wellness journey starts with small steps."
+
+Include:
+
+- Personalized greeting.
+- Current date.
+- Beautiful welcome card.
+- Next upcoming appointment.
+- Appointment date and time.
+- Consultation details.
+- Confirmation status.
+- Reschedule button.
+- Cancel button.
+- Book consultation CTA.
+- Upcoming appointments preview.
+
+If the client has no upcoming appointments, display a friendly empty state.
+
+Use subtle animation when the screen loads.
+
+The design should look like a premium consumer application.
+
+## SCREEN 2: Book Consultation
+
+Create a beautiful multi-step booking experience.
+
+### Step 1: Choose Date
+
+Display a modern date selector.
+
+Requirements:
+
+- Show current month.
+- Navigate between months.
+- Disable past dates.
+- Highlight selected date.
+- Clearly indicate unavailable dates.
+
+### Step 2: Select Time
+
+Display available appointment slots.
+
+Example:
+
+9:00 AM
+
+10:00 AM
+
+11:30 AM
+
+2:00 PM
+
+4:00 PM
+
+The available slots must come from the backend.
+
+Booked slots must not appear as available.
+
+Show a clear selected state.
+
+### Step 3: Enter Details
+
+Fields:
+
+- Full name.
+- Phone number.
+
+Validate the form.
+
+Phone numbers should be normalized consistently.
+
+Do not assume that every user has an Indian phone number unless this is explicitly configured.
+
+### Step 4: Booking Confirmation
+
+Show:
+
+- Client name.
+- Appointment date.
+- Appointment time.
+- Confirmation message.
+- Booking reference.
+- Add to calendar action.
+- Return home button.
+
+Do not display success until the backend confirms that the appointment has been saved.
+
+If the slot becomes unavailable during submission, show a friendly error and ask the client to choose another slot.
+
+---
+
+# 6. APPOINTMENT HISTORY
+
+Create a dedicated appointments screen.
+
+Use two tabs:
+
+Upcoming
+
+Past
+
+## Upcoming
+
+Show all future appointments belonging to the selected client.
+
+Each appointment card should contain:
+
+- Date.
+- Time.
+- Appointment status.
+- Attendance confirmation state.
+- Reschedule action.
+- Cancel action.
+
+## Past
+
+Show historical consultations.
+
+Statuses:
+
+- Done.
+- No-show.
+- Booked, where appropriate for historical records not yet updated.
+
+Use distinct colors for each status.
+
+### Status Colors
+
+Booked: Blue
+
+Done: Green
+
+No-show: Coral Red
+
+Do not treat attendance confirmation as a replacement for the required appointment status.
+
+---
+
+# 7. RESCHEDULING FUNCTIONALITY
+
+Clients must be able to reschedule an upcoming appointment.
+
+Flow:
+
+1. Open appointment details.
+2. Select Reschedule.
+3. Choose a new date.
+4. View available slots.
+5. Select a new time.
+6. Confirm the change.
+7. Update the existing appointment.
+8. Release the previous slot.
+9. Display success feedback.
+
+Rescheduling must be atomic.
+
+If the new slot becomes unavailable, preserve the original appointment.
+
+Do not create duplicate appointments when rescheduling.
+
+---
+
+# 8. CANCELLATION FUNCTIONALITY
+
+Clients should be able to cancel an upcoming appointment.
+
+Show a confirmation dialog.
+
+Example:
+
+"Cancel your consultation?"
+
+"Your appointment slot will become available for someone else."
+
+Buttons:
+
+Keep Appointment
+
+Cancel Appointment
+
+After cancellation:
+
+- Persist the cancellation.
+- Release the appointment slot.
+- Update the nutritionist dashboard.
+- Show a success notification.
+
+Use soft cancellation rather than deleting the historical record.
+
+Because the assignment defines Booked, Done, and No-show as the required visible statuses, model cancellation separately from those three statuses.
+
+Cancelled appointments must not appear in the active appointment list unless a separate cancelled/history view is intentionally provided.
+
+---
+
+# 9. NO-SHOW PREVENTION SYSTEM
+
+This is one of the most important product features.
+
+Implement a lightweight appointment confirmation system.
+
+## Attendance Confirmation
+
+Clients should be able to confirm attendance for upcoming appointments.
+
+Example card:
+
+"Your consultation is coming up!"
+
+"Please confirm that you'll attend."
+
+Buttons:
+
+I'll Be There
+
+Need to Reschedule
+
+After confirmation:
+
+- Save the confirmation state.
+- Record confirmation time.
+- Update the dashboard.
+- Show a confirmed indicator.
+
+## Nutritionist Visibility
+
+Display:
+
+Confirmed
+
+Awaiting Confirmation
+
+Cancelled
+
+These are attendance or lifecycle indicators, not replacements for the three required appointment statuses.
+
+## Reminder Functionality
+
+Implement in-app reminders based on appointment timing.
+
+Show reminders for upcoming consultations.
+
+For example:
+
+"Your consultation is tomorrow at 10:00 AM."
+
+Do not claim WhatsApp, SMS, email, or push notifications work unless they are actually integrated and tested.
+
+If time permits, add an optional WhatsApp reminder workflow.
+
+For a WhatsApp integration:
+
+- Use a legitimate messaging provider.
+- Respect user consent.
+- Keep credentials on the backend.
+- Handle delivery failures.
+- Avoid pretending that a prefilled WhatsApp link is an automatically delivered reminder.
+
+The primary assignment must work without paid messaging services.
+
+---
+
+# 10. NUTRITIONIST DASHBOARD
+
+Build a separate dashboard accessible through:
+
+/nutritionist
+
+The client interface should be accessible through:
+
+/
+
+Use a clean, sophisticated dashboard layout.
+
+The dashboard should feel like part of the same wellness product.
+
+## Dashboard Header
+
+Display:
+
+"Good morning, Doctor"
+
+"Here's your consultation schedule."
+
+Include:
+
+- Current date.
+- Today filter.
+- Add appointment button.
+
+## Summary Cards
+
+Display:
+
+Today's Appointments
+
+Upcoming Appointments
+
+Confirmed Appointments
+
+No-shows
+
+All metrics must be calculated from actual database records.
+
+## Appointment List
+
+Each appointment must show:
+
+- Client name.
+- Phone number, when available.
+- Date.
+- Time.
+- Appointment status.
+- Attendance confirmation.
+- Relevant actions.
+
+## Status Management
+
+The nutritionist must be able to change an appointment status.
+
+Required statuses:
+
+Booked
+
+Done
+
+No-show
+
+Use clearly differentiated colors.
+
+Changes must persist in PostgreSQL.
+
+The client side must reflect changes.
+
+## Today Filter
+
+Provide a filter to show only appointments scheduled for today.
+
+Use the configured practice timezone.
+
+Do not compare dates using the browser timezone without considering the practice timezone.
+
+## Add Appointment
+
+Create a form with:
+
+- Client name.
+- Phone number.
+- Date.
+- Time.
+- Status.
+
+The form should use the same availability rules as client booking.
+
+An appointment created here must appear in the client interface when that client is selected.
+
+Do not allow overlapping active bookings.
+
+## Dashboard Search
+
+Add a search field.
+
+Allow searching by:
+
+- Client name.
+- Phone number.
+
+## Dashboard Filters
+
+Provide filters for:
+
+- All.
+- Today.
+- Booked.
+- Done.
+- No-show.
+
+Keep the interface clean.
+
+---
+
+# 11. SHARED CLIENT DATA WITHOUT LOGIN
+
+The assignment requires the deployed application to be accessible without login.
+
+Implement a lightweight demo identity system.
+
+Use a client selector so reviewers can switch between sample clients.
+
+For example:
+
+Riya Shah
+
+Arjun Mehta
+
+Meera Iyer
+
+Kabir Rao
+
+Also support newly created clients.
+
+Client appointments should be associated with a stable client ID.
+
+Do not use the client's display name alone as an identifier.
+
+Explain clearly that the client selector is a demo mechanism, not production authentication.
+
+Because the application is public, do not expose real patient information.
+
+Use only fictional sample records.
+
+The nutritionist dashboard should be marked as a public demo.
+
+Production deployment would require authentication and role-based access control, but that is outside the required assignment scope.
+
+---
+
+# 12. DATABASE ARCHITECTURE
+
+Use PostgreSQL with SQLAlchemy and Alembic.
+
+Create a clean relational schema.
+
+## Table: clients
+
+Fields:
+
+id
+
+full_name
+
+phone
+
+created_at
+
+updated_at
+
+## Table: appointments
+
+Fields:
+
+id
+
+client_id
+
+appointment_date
+
+start_time
+
+end_time
+
+status
+
+attendance_confirmation
+
+confirmed_at
+
+cancelled_at
+
+created_at
+
+updated_at
+
+## Table: appointment_audit_logs
+
+Fields:
+
+id
+
+appointment_id
+
+action
+
+old_value
+
+new_value
+
+created_at
+
+Audit logging is optional and should not delay core functionality.
+
+## Database Requirements
+
+Use:
+
+- UUID primary keys.
+- Foreign keys.
+- Appropriate indexes.
+- Database constraints.
+- Transaction management.
+- Alembic migrations.
+
+### Prevent Double Booking
+
+Do not rely only on frontend validation.
+
+Enforce availability at the database level.
+
+For fixed-duration slots, use an appropriate uniqueness strategy for active appointments.
+
+For variable-duration appointments, use PostgreSQL exclusion constraints or equivalent transaction-safe overlap protection.
+
+A cancelled appointment must release its slot.
+
+The database must prevent simultaneous requests from reserving the same slot.
+
+Return HTTP 409 Conflict when a slot is already taken.
+
+---
+
+# 13. SAMPLE DATA
+
+Seed the database with the exact assignment sample records after normalization.
+
+Original records:
+
+1. Riya Shah
+   Phone: 98200 11111
+   Date: 24/10/2026
+   Time: 10:00
+   Status: Booked
+
+2. Arjun Mehta
+   Phone: 98200 22222
+   Date: 2026-10-24
+   Time: 11:30am
+   Status: Booked
+
+3. Riya Shah
+   Phone: 9820011111
+   Date: 25-10-2026
+   Time: 4 pm
+   Status: Booked
+
+4. Meera Iyer
+   Phone: Missing
+   Date: 23/10/2026
+   Time: 09:00
+   Status: Done
+
+5. Kabir Rao
+   Phone: 98200 33333
+   Date: 22/10/2026
+   Time: 14:00
+   Status: No-show
+
+## Normalization Rules
+
+Normalize dates to ISO format.
+
+Normalize times to 24-hour format.
+
+Normalize phone formatting while preserving the original meaningful digits.
+
+Recognize that Riya Shah appears twice and should correspond to the same client.
+
+Do not invent a phone number for Meera Iyer.
+
+Store her phone as NULL.
+
+Do not reject the seed record because the phone is missing.
+
+Make the seed process idempotent.
+
+Running it twice must not create duplicate records.
+
+Preserve the statuses provided in the assignment.
+
+Do not automatically convert old Booked records into Done or No-show.
+
+Document all normalization decisions.
+
+---
+
+# 14. BACKEND API DESIGN
+
+Create RESTful endpoints.
+
+Suggested endpoints:
+
+GET /api/health
+
+GET /api/clients
+
+POST /api/clients
+
+GET /api/appointments
+
+GET /api/appointments/{id}
+
+POST /api/appointments
+
+PATCH /api/appointments/{id}
+
+POST /api/appointments/{id}/reschedule
+
+POST /api/appointments/{id}/cancel
+
+PATCH /api/appointments/{id}/status
+
+POST /api/appointments/{id}/confirm
+
+GET /api/availability
+
+GET /api/dashboard/summary
+
+Use request and response schemas.
+
+Validate:
+
+- Required fields.
+- Date formats.
+- Time formats.
+- Phone numbers.
+- Appointment state transitions.
+- Slot availability.
+
+Return meaningful HTTP status codes.
+
+Use centralized exception handling.
+
+Never expose database credentials or stack traces to users.
+
+Generate OpenAPI documentation through FastAPI.
+
+---
+
+# 15. STATE MANAGEMENT
+
+Use TanStack Query for server state.
+
+Requirements:
+
+- Centralized API client.
+- Loading states.
+- Error states.
+- Query invalidation after mutations.
+- Consistent appointment data.
+- Refetching when appropriate.
+
+Both sides must share the same backend.
+
+For the assignment, polling or refetch-on-focus is acceptable.
+
+WebSockets are optional.
+
+Do not add WebSockets unless the core application is already stable.
+
+After creating or changing an appointment, invalidate relevant queries.
+
+A full browser refresh must preserve all saved appointments.
+
+---
+
+# 16. ANIMATIONS AND MICROINTERACTIONS
+
+Use subtle, meaningful animations.
+
+Examples:
+
+- Smooth page transitions.
+- Button hover effects.
+- Card entrance animations.
+- Booking progress transitions.
+- Confirmation checkmark animation.
+- Modal entrance and exit.
+- Skeleton loading.
+- Status change feedback.
+
+Avoid excessive animation.
+
+Respect prefers-reduced-motion.
+
+The interface should remain responsive on lower-powered mobile devices.
+
+---
+
+# 17. EMPTY STATES
+
+Design beautiful empty states.
+
+Examples:
+
+No upcoming appointments:
+
+"Your next step toward better wellness starts here."
+
+Button:
+
+Book a Consultation
+
+No past appointments:
+
+"Your consultation history will appear here."
+
+No appointments today:
+
+"Your schedule is clear today."
+
+No available slots:
+
+"All slots are booked for this date. Try another day."
+
+Do not show raw technical errors.
+
+---
+
+# 18. ERROR HANDLING
+
+Handle:
+
+- Network failures.
+- Backend downtime.
+- Invalid form inputs.
+- Duplicate booking attempts.
+- Expired appointment slots.
+- Database errors.
+- Missing client records.
+- Invalid appointment IDs.
+- Failed rescheduling.
+- Failed cancellation.
+- Empty API responses.
+
+Use friendly error messages.
+
+Provide retry actions where appropriate.
+
+Never show success before a mutation has succeeded.
+
+---
+
+# 19. ACCESSIBILITY
+
+Follow WCAG 2.2 AA principles where practical.
+
+Requirements:
+
+- Semantic HTML.
+- Accessible labels.
+- Keyboard navigation.
+- Visible focus states.
+- Adequate contrast.
+- Screen-reader-friendly controls.
+- Accessible dialogs.
+- Accessible form validation.
+- Clear error descriptions.
+- Touch-friendly controls.
+
+Do not rely on color alone to communicate appointment status.
+
+---
+
+# 20. PROJECT STRUCTURE
+
+Use a clean monorepo structure.
+
+nourish/
+  
+  frontend/
+    src/
+      app/
+      components/
+      features/
+        appointments/
+        booking/
+        clients/
+        dashboard/
+      hooks/
+      layouts/
+      lib/
+      pages/
+      services/
+      theme/
+      types/
+      utils/
+    public/
+    package.json
+    vite.config.ts
+
+  backend/
+    app/
+      api/
+      core/
+      db/
+      models/
+      schemas/
+      services/
+      main.py
+    alembic/
+    tests/
+    requirements.txt
+
+  docs/
+
+  README.md
+
+  .gitignore
+
+  .env.example
+
+Do not create unnecessary abstraction layers.
+
+Favor readable code.
+
+Use TypeScript types throughout the frontend.
+
+---
+
+# 21. TESTING REQUIREMENTS
+
+Implement meaningful tests.
+
+## Backend Tests
+
+Test:
+
+1. Successful appointment booking.
+2. Duplicate booking rejection.
+3. Concurrent booking attempts.
+4. Successful rescheduling.
+5. Failed rescheduling when the new slot is occupied.
+6. Cancellation releasing availability.
+7. Status updates.
+8. Attendance confirmation.
+9. Missing phone number handling.
+10. Sample data normalization.
+
+## Frontend Tests
+
+Verify:
+
+- Booking form validation.
+- Available slot selection.
+- Appointment cards.
+- Reschedule interactions.
+- Cancellation confirmation.
+- Status badges.
+- Dashboard filtering.
+
+## End-to-End Testing
+
+Verify the complete workflow:
+
+1. Open client app.
+2. Select a client.
+3. Book a consultation.
+4. Open nutritionist dashboard.
+5. Confirm the appointment appears.
+6. Update its status.
+7. Return to client app.
+8. Verify the update.
+9. Reschedule an eligible appointment.
+10. Verify the previous slot is released.
+11. Attempt a duplicate booking.
+12. Confirm the backend rejects it.
+
+Do not claim tests passed unless they actually ran.
+
+---
+
+# 22. DEPLOYMENT
+
+Prepare the application for public deployment.
+
+## Frontend
+
+Deploy to Vercel.
+
+## Backend
+
+Deploy to Render.
+
+## Database
+
+Use Supabase PostgreSQL.
+
+## Environment Variables
+
+Frontend:
+
+VITE_API_BASE_URL
+
+Backend:
+
+DATABASE_URL
+
+FRONTEND_URL
+
+CORS_ORIGINS
+
+APP_TIMEZONE
+
+Use Asia/Kolkata as the default practice timezone unless configured otherwise.
+
+Do not hardcode secrets.
+
+Do not commit .env files.
+
+Include .env.example.
+
+Configure CORS correctly.
+
+Verify frontend-to-backend communication after deployment.
+
+The live application must work without login.
+
+Do not claim deployment is complete until the public URL has been tested.
+
+---
+
+# 23. README DOCUMENTATION
+
+Create a professional README containing:
+
+- Product overview.
+- Problem statement.
+- Proposed solution.
+- Feature list.
+- Screenshots placeholders.
+- Technology stack.
+- Architecture overview.
+- Database design.
+- Setup instructions.
+- Environment variables.
+- Local development instructions.
+- API documentation.
+- Testing instructions.
+- Deployment instructions.
+- Known limitations.
+- Future improvements.
+
+Keep documentation accurate.
+
+---
+
+# 24. ASSIGNMENT DOCUMENTATION
+
+Prepare a concise documentation draft using the following headings:
+
+## What We Were Asked
+
+Explain the original assignment requirements.
+
+## Our Approach
+
+Explain the architecture, user experience, and no-show prevention strategy.
+
+## Decisions and Assumptions
+
+Explain:
+
+- Technology choices.
+- Appointment duration.
+- Practice timezone.
+- Availability rules.
+- Demo identity model.
+- Data normalization.
+- Missing phone handling.
+- Cancellation model.
+- Booking conflict prevention.
+
+## What We Added
+
+Explain additional features beyond the requirements.
+
+## What the AI Got Wrong
+
+Maintain an authentic development log.
+
+Record actual examples of:
+
+- Incorrect code generation.
+- Design issues.
+- API mismatches.
+- Database mistakes.
+- Test failures.
+- How each issue was discovered.
+- How each issue was corrected.
+
+Never fabricate mistakes.
+
+## How to Run It
+
+Provide exact setup commands.
+
+---
+
+# 25. AI DEVELOPMENT CHAT LOG
+
+The assignment requires the actual AI development conversation.
+
+Maintain a raw chronological log of:
+
+- Prompts.
+- Questions.
+- Clarifications.
+- Generated suggestions.
+- Corrections.
+- Debugging conversations.
+- Follow-up instructions.
+
+Do not fabricate earlier conversations.
+
+Do not rewrite or sanitize the log to make development appear smoother.
+
+Export the genuine conversation when development is complete.
+
+---
+
+# 26. QUALITY EXPECTATIONS
+
+The final application should feel like a real product.
+
+Avoid:
+
+- Generic dashboards.
+- Unstyled forms.
+- Broken navigation.
+- Placeholder buttons.
+- Hardcoded appointment availability.
+- Nonfunctional actions.
+- Fake success notifications.
+- Inconsistent colors.
+- Unresponsive layouts.
+- Missing error handling.
+- Incorrect appointment statuses.
+- Duplicate bookings.
+- Unnecessary features that delay completion.
+
+Every visible primary action must work.
+
+The application should remain polished at mobile and desktop widths.
+
+---
+
+# 27. DEVELOPMENT EXECUTION PLAN
+
+Work in phases.
+
+## Phase 1: Requirements and Architecture
+
+Inspect the repository.
+
+Review the assignment requirements.
+
+Create a concise implementation plan.
+
+Identify ambiguous requirements and document assumptions.
+
+Define the database schema and API contracts.
+
+## Phase 2: Design System
+
+Set up React, TypeScript, Chakra UI, and routing.
+
+Create the design tokens.
+
+Build reusable components.
+
+Create the mobile and desktop layouts.
+
+## Phase 3: Backend Foundation
+
+Set up FastAPI.
+
+Configure PostgreSQL.
+
+Create models and migrations.
+
+Implement the appointment APIs.
+
+Implement database-level booking conflict protection.
+
+## Phase 4: Client Experience
+
+Build:
+
+- Home screen.
+- Booking flow.
+- Appointment history.
+- Rescheduling.
+- Cancellation.
+- Attendance confirmation.
+
+## Phase 5: Nutritionist Dashboard
+
+Build:
+
+- Appointment list.
+- Status management.
+- Today filter.
+- Manual appointment creation.
+- Search.
+- Summary cards.
+
+## Phase 6: Data Integration
+
+Connect frontend and backend.
+
+Implement TanStack Query.
+
+Seed sample data.
+
+Verify cross-interface synchronization.
+
+## Phase 7: Quality Assurance
+
+Test all major workflows.
+
+Fix functional bugs.
+
+Check responsive layouts.
+
+Check accessibility.
+
+Review error states.
+
+## Phase 8: Deployment Preparation
+
+Create production build.
+
+Verify environment variables.
+
+Prepare Vercel and Render configurations.
+
+Write README.
+
+Prepare deployment instructions.
+
+## Phase 9: Submission Preparation
+
+Prepare the documentation draft.
+
+Preserve the actual AI conversation log.
+
+Create a final requirements checklist.
+
+---
+
+# 28. CRITICAL INSTRUCTIONS FOR CODEX
+
+You are working on a real development project.
+
+Do not stop after creating a plan.
+
+After reviewing the requirements, begin implementing the application.
+
+Work systematically.
+
+Create actual files.
+
+Write functional code.
+
+Run available tests.
+
+Fix errors before continuing.
+
+Do not invent test results.
+
+Do not claim functionality exists unless implemented.
+
+Do not silently omit assignment requirements.
+
+If a requirement is ambiguous, make a reasonable assumption, document it, and continue.
+
+If external credentials are required, use environment variable placeholders and explain what I need to configure.
+
+Never expose secrets.
+
+Prioritize the assignment's mandatory features over optional enhancements.
+
+If time is limited, finish the complete booking workflow before adding decorative or advanced features.
+
+The product should be impressive because it works beautifully, not merely because it looks beautiful.
+
+---
+
+# 29. FINAL ACCEPTANCE CRITERIA
+
+The application is complete only when:
+
+[ ] Client home screen works.
+
+[ ] Client can book an appointment.
+
+[ ] Available time slots come from the backend.
+
+[ ] Double booking is prevented by the backend and database.
+
+[ ] Client can view upcoming appointments.
+
+[ ] Client can view past appointments.
+
+[ ] Client can reschedule eligible appointments.
+
+[ ] Client can cancel eligible appointments.
+
+[ ] Nutritionist can view all appointments.
+
+[ ] Nutritionist can change appointment status.
+
+[ ] Nutritionist can manually add appointments.
+
+[ ] Nutritionist can filter today's appointments.
+
+[ ] Both interfaces share the same data.
+
+[ ] Attendance confirmation works.
+
+[ ] All five provided sample appointments are loaded.
+
+[ ] Sample dates and times are normalized.
+
+[ ] Missing phone values are handled correctly.
+
+[ ] The UI works beautifully on mobile.
+
+[ ] The UI works on desktop.
+
+[ ] No login is required for the demo.
+
+[ ] Database data persists after refresh.
+
+[ ] Production build succeeds.
+
+[ ] README is complete.
+
+[ ] Documentation draft is prepared.
+
+[ ] Real AI development history is preserved.
+
+[ ] Public deployment is verified.
+
+---
+
+# 30. FINAL INSTRUCTION
+
+Build Nourish as though it were being reviewed by an experienced product designer, a senior full-stack engineer, and a startup founder.
+
+Make every screen purposeful.
+
+Make every interaction intuitive.
+
+Make the booking process effortless.
+
+Make the dashboard useful.
+
+Make the visual experience memorable.
+
+Make the application technically reliable.
+
+Use the full capabilities of React, Chakra UI, FastAPI, and PostgreSQL without overengineering.
+
+Start by inspecting the repository and defining the implementation plan.
+
+Then immediately begin Phase 1 and continue implementing the project phase by phase.
+
+Do not ask for approval after every phase unless a decision requires my input.
+
+When finished, provide:
+
+1. Summary of implemented features.
+2. Project structure.
+3. Commands to run locally.
+4. Tests executed and their actual results.
+5. Deployment instructions.
+6. Known limitations.
+7. Final assignment compliance checklist.
+
+The final result should be a polished, fully functional, mobile-first wellness appointment product ready for demonstration.
