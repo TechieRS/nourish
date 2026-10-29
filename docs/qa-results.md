@@ -1,3 +1,5 @@
+> Latest deployment audit: [29 October 2026](deployment-audit-2026-10-29.md). The historical results below predate the new audit and expanded suite.
+
 # Actual verification results
 
 Executed locally on 28 October 2026 (Asia/Kolkata). No public hosting URL was available.

@@ -1,8 +1,16 @@
-name: Nourish checks
-on: [push, pull_request]
+name: Nourish checks and deployment
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
 jobs:
   verify:
     runs-on: ubuntu-latest
+    timeout-minutes: 20
     services:
       postgres:
         image: postgres:16-alpine
@@ -17,45 +25,103 @@ jobs:
     env:
       DATABASE_URL: postgresql+psycopg://postgres:postgres@127.0.0.1:5432/nourish_test
       TEST_DATABASE_URL: postgresql+psycopg://postgres:postgres@127.0.0.1:5432/nourish_test
+      E2E_DATABASE_URL: postgresql+psycopg://postgres:postgres@127.0.0.1:5432/nourish_e2e_test
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
           python-version: '3.13'
           cache: pip
-          cache-dependency-path: backend/requirements.lock.txt
+          cache-dependency-path: |
+            backend/requirements.lock.txt
+            backend/requirements-dev.txt
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
           cache: npm
           cache-dependency-path: frontend/package-lock.json
-      - run: pip install -r requirements.lock.txt
-        working-directory: backend
-      - run: python -m pytest -q
+      - run: pip install -r requirements-dev.txt
         working-directory: backend
       - run: npm ci
         working-directory: frontend
-      - run: npm test && npm run build
+      - name: Create isolated browser database
+        run: |
+          python - <<'PYTHON'
+          import psycopg
+          with psycopg.connect('postgresql://postgres:postgres@127.0.0.1:5432/postgres', autocommit=True) as db:
+              db.execute('CREATE DATABASE nourish_e2e_test')
+          PYTHON
+      - run: npx playwright install --with-deps chromium
+        working-directory: frontend
+      - name: Verify backend, frontend and production browser flows
+        run: python scripts/verify.py
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: qa-evidence
+          include-hidden-files: true
+          path: |
+            .local/qa/
+            frontend/test-results/
+            frontend/smoke-results/
+
+  deploy:
+    needs: verify
+    if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main' && vars.DEPLOY_ENABLED == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    environment: production
+    concurrency:
+      group: nourish-production
+      cancel-in-progress: false
+    env:
+      RENDER_API_KEY: ${{ secrets.RENDER_API_KEY }}
+      RENDER_SERVICE_ID: ${{ vars.RENDER_SERVICE_ID }}
+      BACKEND_URL: ${{ vars.BACKEND_URL }}
+      FRONTEND_URL: ${{ vars.FRONTEND_URL }}
+      VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+      VERCEL_ORG_ID: ${{ vars.VERCEL_ORG_ID }}
+      VERCEL_PROJECT_ID: ${{ vars.VERCEL_PROJECT_ID }}
+      VITE_API_BASE_URL: ${{ vars.BACKEND_URL }}/api
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+      - name: Validate deployment configuration
+        run: |
+          for name in RENDER_API_KEY RENDER_SERVICE_ID BACKEND_URL FRONTEND_URL VERCEL_TOKEN VERCEL_ORG_ID VERCEL_PROJECT_ID; do
+            if [ -z "${!name}" ]; then echo "Missing deployment setting: $name" >&2; exit 1; fi
+          done
+          node frontend/scripts/check-deploy-env.mjs
+      - name: Deploy the tested backend commit and wait for Render
+        run: python scripts/deploy-render.py
+      - name: Install Vercel CLI
+        run: npm install --global vercel@65.7.0
+      - name: Pull Vercel production settings
+        run: vercel pull --yes --environment=production --token="$VERCEL_TOKEN"
+      - name: Build frontend with the Render API URL
+        run: vercel build --prod --token="$VERCEL_TOKEN"
+      - name: Deploy the built frontend
+        run: vercel deploy --prebuilt --prod --token="$VERCEL_TOKEN"
+      - name: Check deployed endpoints, CORS and deep links
+        run: python scripts/smoke.py --backend-url "$BACKEND_URL" --frontend-url "$FRONTEND_URL"
+      - run: npm ci
         working-directory: frontend
       - run: npx playwright install --with-deps chromium
         working-directory: frontend
-      - name: Start API and frontend
-        run: |
-          cd backend
-          python -m app.db.seed
-          uvicorn app.main:app --host 127.0.0.1 --port 8000 > /tmp/nourish-api.log 2>&1 &
-          cd ../frontend
-          npm run dev > /tmp/nourish-web.log 2>&1 &
-          for attempt in $(seq 1 30); do
-            if curl --fail --silent http://127.0.0.1:8000/api/health && curl --fail --silent http://127.0.0.1:5173/ > /dev/null; then exit 0; fi
-            sleep 1
-          done
-          cat /tmp/nourish-api.log /tmp/nourish-web.log
-          exit 1
-      - run: npm run test:e2e
+      - name: Check deployed browser screens without creating records
+        run: npm run test:smoke
         working-directory: frontend
+        env:
+          E2E_BASE_URL: ${{ vars.FRONTEND_URL }}
       - uses: actions/upload-artifact@v4
         if: failure()
         with:
-          name: browser-failure-traces
-          path: frontend/test-results/
+          name: production-failure-traces
+          path: frontend/smoke-results/

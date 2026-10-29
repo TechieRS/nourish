@@ -10,5 +10,11 @@ __pycache__/
 *.tsbuildinfo
 playwright-report/
 test-results/
+smoke-results/
 .local/
 .DS_Store
+.vercel/
+coverage/
+htmlcov/
+.coverage
+.ruff_cache/

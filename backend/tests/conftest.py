@@ -14,9 +14,12 @@ if not url or not (make_url(url).database or "").endswith("_test"):
         "Set TEST_DATABASE_URL to a dedicated PostgreSQL database ending in _test. Tests truncate its tables."
     )
 os.environ["DATABASE_URL"] = url
-from app.main import app
-from app.db.session import engine
-from app.services import scheduling
+os.environ["FRONTEND_URL"] = "http://localhost:5173"
+os.environ["CORS_ORIGINS"] = "http://localhost:5173,http://127.0.0.1:5173"
+os.environ["APP_TIMEZONE"] = "Asia/Kolkata"
+from app.main import app  # noqa: E402 - configure isolated test environment first
+from app.db.session import engine  # noqa: E402
+from app.services import scheduling  # noqa: E402
 
 
 @pytest.fixture(scope="session", autouse=True)

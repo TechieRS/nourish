@@ -255,9 +255,9 @@ export function DashboardPage() {
                     >
                       Cancelled
                     </Badge>
-                  ) : (
+                  ) : a.status === "Booked" ? (
                     <AttendanceBadge confirmed={a.attendance_confirmation} />
-                  )}
+                  ) : null}
                 </Stack>
                 <Box w={{ base: "100%", md: "145px" }}>
                   <Select

@@ -84,6 +84,10 @@ test("booking, dashboard sync, status, reschedule, conflict, confirmation, cance
     await expect(
       page.getByRole("combobox", { name: /Status for/ }),
     ).toHaveValue("Done");
+    await page.getByRole("button", { name: "Done", exact: true }).click();
+    await expect(
+      page.getByText("Awaiting confirmation", { exact: true }),
+    ).toHaveCount(0);
     await page.goto("/appointments");
     await expect(page.getByText("Done", { exact: true })).toBeVisible();
     await page.reload();

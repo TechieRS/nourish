@@ -59,7 +59,7 @@ export function BookingPage() {
   const [step, setStep] = useState(0),
     [date, setDate] = useState(""),
     [time, setTime] = useState(""),
-    [newClient, setNewClient] = useState(false),
+    [newClient, setNewClient] = useState(clients.length === 0),
     [target, setTarget] = useState(client?.id || ""),
     [status, setStatus] = useState<Status>("Booked"),
     [saved, setSaved] = useState<Appointment | null>(null);

@@ -24,7 +24,7 @@ This is an intentionally public assignment demo. The selector represents fiction
 
 ## Stack and structure
 
-React 18 / Vite / TypeScript / Chakra UI 2 / React Router 6 / React Hook Form / Zod / TanStack Query / Lucide / Framer Motion / date-fns. Python 3.13 / FastAPI / Pydantic 2 / SQLAlchemy 2 / Alembic / psycopg / PostgreSQL 16. Deployment target: Vercel + Render + Supabase PostgreSQL.
+React 18 / Vite / TypeScript / Chakra UI 2 / React Router 7 / React Hook Form / Zod 4 / TanStack Query / Lucide / Framer Motion / date-fns. Python 3.13 / FastAPI / Pydantic 2 / SQLAlchemy 2 / Alembic / psycopg / PostgreSQL 16. Deployment target: Vercel + Render + Supabase PostgreSQL.
 
 ```text
 nourish/
@@ -193,13 +193,20 @@ CHROME_PATH='/Applications/Google Chrome.app/Contents/MacOS/Google Chrome' npm r
 
 ## Deployment
 
-Deployment is **prepared, not live**. No hosting accounts, database credentials or public URL have been supplied.
+The frontend belongs on **Vercel** and the API on **Render**, using the existing hosted PostgreSQL database. See [the deployment guide](docs/deployment.md) for the exact account settings, secret names, release workflow and one-command QA runner. [The 29 October audit](docs/deployment-audit-2026-10-29.md) records the checks and fixes.
 
-1. Create a Supabase project dedicated to this fictional demo. Copy the **Session pooler** PostgreSQL URI from Connect (appropriate for a persistent SQLAlchemy service), use the exact supplied username/host and SSL parameters. Keep it on the backend only. See [Supabase connection guidance](https://supabase.com/docs/guides/database/connecting-to-postgres).
-2. Push this repository to GitHub. Import `render.yaml` as a Render Blueprint, or create a Python web service with root directory `backend`, build `pip install -r requirements.lock.txt`, and start `alembic upgrade head && python -m app.db.seed && uvicorn app.main:app --host 0.0.0.0 --port $PORT`. Set DATABASE_URL to the Supabase URI, APP_TIMEZONE, FRONTEND_URL and CORS_ORIGINS. The demo’s single-instance startup runs migration/seed before serving; separate migrations from startup before scaling to multiple instances. See [Render FastAPI deployment](https://render.com/docs/deploy-fastapi).
-3. Import the GitHub repository in Vercel, root directory `frontend`, framework Vite, build `npm run build`, output `dist`. Set `VITE_API_BASE_URL=https://YOUR-API.onrender.com/api` and deploy. `vercel.json` supplies SPA deep-link rewrites and service-worker cache headers. See [Vercel Vite guidance](https://vercel.com/docs/frameworks/frontend/vite).
-4. Set Render FRONTEND_URL and CORS_ORIGINS to the actual Vercel origin and redeploy the API. Remove unneeded development origins in hosted settings.
-5. Test `/api/health`, `/docs`, `/`, `/book`, and `/nutritionist` at the real URLs. Run the browser suite with E2E_BASE_URL/E2E_API_URL set to those URLs. Verify persistence after refresh, a cross-interface update, duplicate conflict and PWA manifest. Only then mark public deployment complete.
+The existing Vercel frontend at `https://nourish-dto7.vercel.app` loads its shell but was built with a relative `/api` URL that returns 404. `https://nourish-one-ochre.vercel.app` is the API currently hosted on Vercel; its database readiness endpoint returns 503. A working Render deployment has not yet been verified.
+
+GitHub Actions now tests isolated PostgreSQL, frontend logic, the production build, browser flows, accessibility, responsive screens and PWA behavior. Once Render/Vercel credentials and project settings are configured, setting `DEPLOY_ENABLED=true` enables backend-first deployment of tested `main` commits followed by live smoke checks. Direct host Git auto-deploys are disabled in the deployment configuration so the workflow controls release.
+
+Local QA with the existing virtual environment and PostgreSQL running:
+
+```bash
+backend/.venv/bin/python -m pip install -r backend/requirements-dev.txt
+npm exec --yes --package=node@22 -c 'backend/.venv/bin/python scripts/verify.py'
+```
+
+The runner creates/reuses dedicated local test databases; their application tables are cleared. It preserves the configured `nourish` development database and stops its temporary servers. See the guide for clean setup and explicit test database URLs.
 
 ## Submission and development history
 
@@ -218,4 +225,4 @@ python3 scripts/export-conversation.py /absolute/path/to/current-session.jsonl
 - Only selection is remembered locally. Offline shell can open, but no offline booking or cached availability is provided.
 - Automated verification uses desktop Chrome, mobile viewport emulation and axe. Physical-device, Safari, VoiceOver and install-prompt testing remain manual.
 - Completed/no-show statuses are terminal. A production correction workflow would need explicit audited reopening permissions.
-- Production accounts, GitHub remote/push and live deployment remain to be configured. No public deployment is claimed.
+- GitHub access and the existing remote are verified. Render/Vercel deployment access, hosted database settings and the final live deployment remain to be configured.

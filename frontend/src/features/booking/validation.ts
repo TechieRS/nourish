@@ -2,9 +2,13 @@ import { z } from "zod";
 export const detailsSchema = z.object({
   full_name: z
     .string()
-    .trim()
-    .min(2, "Please enter your full name.")
-    .max(100, "Please use at most 100 characters."),
+    .transform((value) => value.trim().replace(/\s+/g, " "))
+    .pipe(
+      z
+        .string()
+        .min(2, "Please enter your full name.")
+        .max(100, "Please use at most 100 characters."),
+    ),
   phone: z
     .string()
     .trim()

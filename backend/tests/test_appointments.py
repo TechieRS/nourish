@@ -7,6 +7,7 @@ from app.main import app
 from app.db.session import SessionLocal, engine
 from app.db.seed import seed, normalized
 from app.models.entities import Appointment, Client, AuditLog
+from datetime import datetime
 
 DAY = "2026-10-29"
 
@@ -120,7 +121,12 @@ def test_attendance_confirmation_persisted_and_idempotent(api, client_id):
     confirmed = api.post(f"/api/appointments/{a['id']}/confirm").json()
     assert confirmed["attendance_confirmation"] and confirmed["confirmed_at"]
     again = api.post(f"/api/appointments/{a['id']}/confirm").json()
-    assert again["confirmed_at"] == confirmed["confirmed_at"]
+
+    assert datetime.fromisoformat(
+        again["confirmed_at"].replace("Z", "+00:00")
+    ) == datetime.fromisoformat(
+        confirmed["confirmed_at"].replace("Z", "+00:00")
+    )
     assert api.get("/api/dashboard/summary").json()["confirmed"] == 1
 
 
@@ -151,14 +157,14 @@ def test_sample_normalization_and_idempotence(api):
 
 
 def test_invalid_slots_and_unknown_ids(api, client_id):
-    for date, time in [
+    for day, time in [
         ("2026-10-25", "10:00"),
         (DAY, "10:15"),
         ("2026-11-01", "10:00"),
         ("2027-10-29", "10:00"),
         (DAY, "10:00:01"),
     ]:
-        assert booking(api, client_id, time, date).status_code == 422
+        assert booking(api, client_id, time, day).status_code == 422
     assert api.get("/api/appointments/not-a-uuid").status_code == 422
     assert (
         api.get("/api/appointments/00000000-0000-0000-0000-000000000000").status_code

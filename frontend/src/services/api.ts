@@ -20,9 +20,12 @@ export async function request<T>(path: string, init?: RequestInit): Promise<T> {
   try {
     response = await fetch(`${base}${path}`, {
       ...init,
-      headers: { "Content-Type": "application/json", ...init?.headers },
+      headers: {
+        ...(init?.body ? { "Content-Type": "application/json" } : {}),
+        ...init?.headers,
+      },
       cache: "no-store",
-      signal: AbortSignal.timeout(15000),
+      signal: init?.signal ?? AbortSignal.timeout(60000),
     });
   } catch {
     throw new ApiError(

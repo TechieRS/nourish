@@ -5,8 +5,10 @@ import type { Status } from "../types";
 export function useAppointments(clientId?: string, all = false) {
   return useQuery({
     queryKey: ["appointments", all ? "all" : clientId],
-    queryFn: () => api.appointments(all ? "" : `?client_id=${clientId}`),
-    enabled: all || !!clientId,
+    queryFn: () =>
+      !all && !clientId
+        ? Promise.resolve([])
+        : api.appointments(all ? "" : `?client_id=${clientId}`),
     refetchInterval: 15000,
   });
 }
