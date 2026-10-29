@@ -6,8 +6,8 @@ from sqlalchemy.exc import IntegrityError, SQLAlchemyError
 from app.api.routes import router
 from app.core.config import get_settings
 
-FRONTEND_URL=https://nourish-dto7.vercel.app/
-CORS_ORIGINS=https://nourish-dto7.vercel.app/
+FRONTEND_URL="https://nourish-dto7.vercel.app/"
+CORS_ORIGINS="https://nourish-dto7.vercel.app/"
 
 app = FastAPI(
     title="Nourish API",
