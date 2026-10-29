@@ -1,8 +1,9 @@
 services:
   - type: web
-    name: nourish-api
+    name: nourish
     runtime: python
     plan: free
+    region: oregon
     branch: main
     autoDeployTrigger: "off"
     rootDir: backend
@@ -11,10 +12,19 @@ services:
     healthCheckPath: /api/health
     envVars:
       - key: DATABASE_URL
-        sync: false
+        fromDatabase:
+          name: nourish-db
+          property: connectionString
       - key: FRONTEND_URL
-        sync: false
+        value: https://nourish-dto7.vercel.app
       - key: CORS_ORIGINS
-        value: ""
+        value: https://nourish-dto7.vercel.app
       - key: APP_TIMEZONE
         value: Asia/Kolkata
+
+databases:
+  - name: nourish-db
+    plan: free
+    region: oregon
+    postgresMajorVersion: "16"
+    ipAllowList: []

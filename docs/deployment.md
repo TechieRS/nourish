@@ -1,8 +1,8 @@
 # Vercel frontend and Render backend
 
-The tested deployment pipeline is in `.github/workflows/ci.yml`. QA runs on every push and pull request. Deployment runs after QA on `main` once the repository variable `DEPLOY_ENABLED` is `true`. The production hosting operations still require account access and secrets; local tests do not prove a live deployment.
+The deployment pipeline is in `.github/workflows/ci.yml`. QA runs on every push and pull request. Production deployment runs after QA on `main` when `DEPLOY_ENABLED=true`. Render and Vercel access and encrypted GitHub deployment secrets have been configured. The user selected automatically provisioned free Render PostgreSQL; no manually supplied database URI is needed.
 
-## Existing deployments checked on 29 October 2026
+## Initial deployment findings on 29 October 2026
 
 | URL | Observed role | Observed problem |
 | --- | --- | --- |
@@ -11,35 +11,43 @@ The tested deployment pipeline is in `.github/workflows/ci.yml`. QA runs on ever
 
 The backend root and `/health` only indicate that the Python process is running. Use **`/api/health`** to check database readiness. The backend's 503 proves that the deployed API cannot complete its database operation; its exact database configuration cannot be determined without hosting settings/log access.
 
-GitHub access to `TechieRS/nourish` was verified through the existing macOS Git credential. No Actions secrets or variables were configured at inspection. No Render/Vercel CLI login or deployment token was found in the project's environment or standard CLI configuration locations. The connected integrations for those accounts are not yet available.
+Those findings preceded hosting configuration. GitHub access was verified through the existing macOS Git credential. The user then supplied Render and project-scoped Vercel credentials, which were validated and stored privately; GitHub now holds encrypted deployment secrets and the necessary project variables.
 
-## One-time hosting setup
+## Configured hosting
 
-1. Connect the Render and Vercel accounts, or securely provide deployment tokens through their integrations/local login. Keep passwords and tokens out of chat, source files and `VITE_` values.
-2. In Render, create a Blueprint from `TechieRS/nourish` using the root `render.yaml`. It defines a free Python service named `nourish-api`, root `backend`, Python 3.13, locked dependencies, `bash start-render.sh` and readiness at `/api/health`. For an existing service, apply these settings to that service rather than creating a duplicate. No paid resource is needed by this configuration.
-3. Configure the Render environment below. The user selected an **existing hosted PostgreSQL** database. No cloud database is provisioned by this Blueprint.
-4. Keep/reuse the Vercel **frontend** project `nourish-dto7` in the `ravis-projects-ad3c2dff` team. Its root directory must be **`frontend`**, framework Vite, Node 22, install `npm ci`, build `npm run build:vercel`, output `dist`. The similarly named `nourish` project currently serves the backend and is not the frontend target.
-5. Add the GitHub Actions settings listed below, then set `DEPLOY_ENABLED=true`. Run the workflow manually on `main`, or push a change to `main`.
-6. After the new Render backend and Vercel frontend pass the live smoke checks, the old Vercel backend can be retired separately. It has not been deleted by this work.
+| Component | Target |
+| --- | --- |
+| Frontend | https://nourish-dto7.vercel.app |
+| Render backend | https://nourish-sfde.onrender.com |
+| Render service | `nourish` / `srv-dbhecqdg1s2s739s4ho0`, free Python service in Oregon |
+| Database | `nourish-db`, free Render PostgreSQL 16 in Oregon |
+| Database expiration | 28 November 2026; upgrade or migrate before expiry if data must be retained |
+| Vercel frontend project | `nourish-dto7`, root `frontend`, Node 22, Vite |
 
-The frontend's `vercel.json` disables direct Git deployments so the workflow controls production release after tests. Render auto-deploy is also off for the same reason. Until credentials and `DEPLOY_ENABLED` are configured, pushes run QA without releasing. The first Render Blueprint creation may still perform an initial deployment.
+The existing Render service was reused. Its settings now build locked dependencies, run `bash start-render.sh`, and use `/api/health` for database-aware readiness. The database was provisioned automatically, has public database access disabled, and connects to the API over Render's internal network. The root `render.yaml` records this service and database relationship using `fromDatabase`.
+
+Vercel's production API URL is `https://nourish-sfde.onrender.com/api`, install command is `npm ci`, build is `npm run build:vercel`, and output is `dist`. The older `nourish-one-ochre.vercel.app` backend has not been deleted.
+
+The frontend's `vercel.json` disables direct Git deployments so the workflow controls production release after tests. Render auto-deploy is also off for the same reason. Once database provisioning finishes, enable `DEPLOY_ENABLED=true` and push/run the workflow to deploy. Check the workflow result and live readiness before claiming a successful release.
+
+To reproduce this setup in another account, provision the Blueprint and supply frontend/project/account settings below. A free Render PostgreSQL instance expires after 30 days and has no managed backups. No paid resource is selected by this configuration. [Render free plan limits](https://render.com/docs/free).
 
 ### Render environment
 
 | Name | Value |
 | --- | --- |
-| `DATABASE_URL` | Secret PostgreSQL connection URI for the existing demo database. For Supabase, use its Session pooler URI, the exact generated username/host/password and `sslmode=require`. URL-encode reserved password characters. |
+| `DATABASE_URL` | Render-generated internal PostgreSQL URI, supplied automatically through the Blueprint or the provisioning API. Never copy it to frontend variables. |
 | `FRONTEND_URL` | `https://nourish-dto7.vercel.app` |
-| `CORS_ORIGINS` | Empty, or additional exact HTTPS frontend origins separated by commas. Wildcards and URL paths are rejected. Trailing slashes are normalized. |
+| `CORS_ORIGINS` | `https://nourish-dto7.vercel.app`, or additional exact HTTPS frontend origins separated by commas. Wildcards and URL paths are rejected. Trailing slashes are normalized. The single-variable Render API rejects an empty value. |
 | `APP_TIMEZONE` | `Asia/Kolkata` |
 
 The service's startup checks required settings, applies forward Alembic migrations, preserves existing seed records, and starts Uvicorn on Render's `$PORT`. This is suitable for the demo's single service instance. Before running multiple instances, move migrations into a separate release step.
 
-Use a PostgreSQL database dedicated to fictional demo data. The existing cloud connection secret is still required; the project's ignored `backend/.env` points only to local PostgreSQL. Do not enter cloud credentials into frontend variables.
+The Render database is dedicated to fictional demo data. The project's ignored `backend/.env` still points to local PostgreSQL. No local development database was moved or reset. Do not enter cloud credentials into frontend variables.
 
 ### Vercel environment
 
-Set **Production** `VITE_API_BASE_URL=https://YOUR-RENDER-SERVICE.onrender.com/api`. This value is public and baked into JavaScript at build time. Changing it requires a new frontend build. The workflow also supplies it from `BACKEND_URL` to keep the release aligned with the configured Render origin.
+Production `VITE_API_BASE_URL` is configured as `https://nourish-sfde.onrender.com/api`. This value is public and baked into JavaScript at build time. Changing it requires a new frontend build. The workflow also supplies it from `BACKEND_URL` to keep the release aligned with the configured Render origin.
 
 `npm run build:vercel` fails early if the API URL is absent, relative, local, non-HTTPS, or missing `/api`. This prevents the currently observed frontend deployment mistake from recurring.
 
@@ -56,9 +64,9 @@ Repository settings: `https://github.com/TechieRS/nourish/settings/secrets/actio
 | Variable | `FRONTEND_URL` | `https://nourish-dto7.vercel.app` |
 | Variable | `VERCEL_ORG_ID` | Actual Vercel team ID, not the team's display slug |
 | Variable | `VERCEL_PROJECT_ID` | Actual frontend project ID for `nourish-dto7` |
-| Repository variable | `DEPLOY_ENABLED` | `true` after the other settings are ready |
+| Repository variable | `DEPLOY_ENABLED` | `true` after database provisioning and the other settings are ready |
 
-The database secret belongs on Render, not GitHub or Vercel. A new GitHub token is not needed for checkout or CI; Actions uses its built-in repository token.
+The database secret belongs on Render, not GitHub or Vercel. Both deployment tokens are configured as encrypted GitHub repository secrets; public project/service identifiers are repository variables. A new GitHub token is not needed for checkout or CI; Actions uses its built-in repository token.
 
 ## Automated release behavior
 
@@ -114,4 +122,4 @@ E2E_BASE_URL=https://nourish-dto7.vercel.app npm run test:smoke
 
 This remains a public fictional demo without authentication or practitioner authorization. Real patient use requires a separate identity/access-control implementation and operational review.
 
-References: [Render Blueprint specification](https://render.com/docs/blueprint-spec), [Render deploys](https://render.com/docs/deploys), [Vercel GitHub Actions](https://vercel.com/kb/guide/how-can-i-use-github-actions-with-vercel), [Vercel monorepos](https://vercel.com/docs/monorepos), [Supabase PostgreSQL connections](https://supabase.com/docs/guides/database/connecting-to-postgres).
+References: [Render free plan limits](https://render.com/docs/free), [Render Blueprint specification](https://render.com/docs/blueprint-spec), [Render deploys](https://render.com/docs/deploys), [Vercel GitHub Actions](https://vercel.com/kb/guide/how-can-i-use-github-actions-with-vercel), [Vercel monorepos](https://vercel.com/docs/monorepos), [Supabase PostgreSQL connections](https://supabase.com/docs/guides/database/connecting-to-postgres).

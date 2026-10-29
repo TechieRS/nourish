@@ -193,11 +193,11 @@ CHROME_PATH='/Applications/Google Chrome.app/Contents/MacOS/Google Chrome' npm r
 
 ## Deployment
 
-The frontend belongs on **Vercel** and the API on **Render**, using the existing hosted PostgreSQL database. See [the deployment guide](docs/deployment.md) for the exact account settings, secret names, release workflow and one-command QA runner. [The 29 October audit](docs/deployment-audit-2026-10-29.md) records the checks and fixes.
+Deployment targets are **[Vercel frontend](https://nourish-dto7.vercel.app)** and **[Render API](https://nourish-sfde.onrender.com)**. The existing Render service is reused with a newly provisioned free PostgreSQL 16 database. Credentials and project settings are configured through the hosting APIs and encrypted GitHub Actions secrets. See [deployment configuration](docs/deployment.md), [the audit](docs/deployment-audit-2026-10-29.md), and [current workflow runs](https://github.com/TechieRS/nourish/actions).
 
-The existing Vercel frontend at `https://nourish-dto7.vercel.app` loads its shell but was built with a relative `/api` URL that returns 404. `https://nourish-one-ochre.vercel.app` is the API currently hosted on Vercel; its database readiness endpoint returns 503. A working Render deployment has not yet been verified.
+The user selected automatic Render PostgreSQL setup instead of supplying a Supabase connection. **The free database expires on 28 November 2026.** Upgrade or migrate before then if its fictional booking data must be retained. The older Vercel-hosted backend has not been removed.
 
-GitHub Actions now tests isolated PostgreSQL, frontend logic, the production build, browser flows, accessibility, responsive screens and PWA behavior. Once Render/Vercel credentials and project settings are configured, setting `DEPLOY_ENABLED=true` enables backend-first deployment of tested `main` commits followed by live smoke checks. Direct host Git auto-deploys are disabled in the deployment configuration so the workflow controls release.
+GitHub Actions tests isolated PostgreSQL, frontend logic, the production build, browser flows, accessibility, responsive screens and PWA behavior before deployment. With `DEPLOY_ENABLED=true`, it releases tested `main` commits to Render first, then Vercel, and runs read-only live smoke checks. Direct host Git auto-deploys are disabled so the workflow controls release. A successful CI run with the deploy job skipped is not a successful release; check both jobs and `/api/health`.
 
 Local QA with the existing virtual environment and PostgreSQL running:
 
@@ -225,4 +225,4 @@ python3 scripts/export-conversation.py /absolute/path/to/current-session.jsonl
 - Only selection is remembered locally. Offline shell can open, but no offline booking or cached availability is provided.
 - Automated verification uses desktop Chrome, mobile viewport emulation and axe. Physical-device, Safari, VoiceOver and install-prompt testing remain manual.
 - Completed/no-show statuses are terminal. A production correction workflow would need explicit audited reopening permissions.
-- GitHub access and the existing remote are verified. Render/Vercel deployment access, hosted database settings and the final live deployment remain to be configured.
+- Render's free PostgreSQL database expires on 28 November 2026. Hosting tokens have their own configured lifetime and may require rotation.

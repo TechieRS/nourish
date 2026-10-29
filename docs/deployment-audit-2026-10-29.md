@@ -56,3 +56,9 @@ Non-failing output: the existing FastAPI TestClient emits an httpx deprecation n
 GitHub's recent existing workflow runs were failing before this work. Local GitHub credentials provide repository admin/push access. No Actions deployment secrets or variables were found. Hosting access and the existing hosted PostgreSQL connection secret are needed to diagnose the cloud database failure and complete the requested move to Render.
 
 No Render deployment or successful public booking is claimed. The exact connection failure requires hosting logs/settings access. [Deployment setup and required settings](deployment.md).
+
+## Subsequent hosting configuration
+
+After the initial audit, the user supplied working Render and Vercel access and selected automatic free Render PostgreSQL provisioning. The existing `nourish` Render service at `https://nourish-sfde.onrender.com` was found with no environment variables configured. It has been updated to use locked dependencies, the migration/start script and database-aware health checks. A dedicated free `nourish-db` PostgreSQL 16 instance was created in Oregon, with public database access disabled; it expires on 28 November 2026.
+
+The frontend project `nourish-dto7` has been configured for Node 22, root `frontend`, and the Render API URL. GitHub has encrypted deployment tokens and the necessary project variables. This supersedes the initial lack of hosting access above. The [workflow runs](https://github.com/TechieRS/nourish/actions) and live `/api/health` establish the subsequent release result; the initial audit findings remain historical evidence.
