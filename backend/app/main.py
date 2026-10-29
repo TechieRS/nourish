@@ -6,6 +6,9 @@ from sqlalchemy.exc import IntegrityError, SQLAlchemyError
 from app.api.routes import router
 from app.core.config import get_settings
 
+FRONTEND_URL=https://nourish-dto7.vercel.app/
+CORS_ORIGINS=https://nourish-dto7.vercel.app/
+
 app = FastAPI(
     title="Nourish API",
     version="1.0.0",
@@ -69,3 +72,24 @@ async def database_error(request: Request, exc: SQLAlchemyError):
 
 
 app.include_router(router)
+
+# Root endpoint
+@app.get("/", tags=["Health"])
+async def home():
+    return {
+        "message": "Welcome to Nourish API",
+        "status": "success",
+        "application": "Nourish Wellness Platform",
+        "version": "1.0.0",
+        "documentation": "/docs"
+    }
+
+
+# Health check endpoint
+@app.get("/health", tags=["Health"])
+async def health_check():
+    return {
+        "status": "healthy",
+        "service": "Nourish API",
+        "version": "1.0.0"
+    }
