@@ -120,8 +120,15 @@ jobs:
         working-directory: frontend
         env:
           E2E_BASE_URL: ${{ vars.FRONTEND_URL }}
+      - name: Check deployed accessibility including pending API states
+        run: npm run test:e2e -- e2e/accessibility.spec.ts --timeout=90000
+        working-directory: frontend
+        env:
+          E2E_BASE_URL: ${{ vars.FRONTEND_URL }}
       - uses: actions/upload-artifact@v4
         if: failure()
         with:
           name: production-failure-traces
-          path: frontend/smoke-results/
+          path: |
+            frontend/smoke-results/
+            frontend/test-results/

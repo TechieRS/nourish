@@ -77,7 +77,7 @@ The database secret belongs on Render, not GitHub or Vercel. Both deployment tok
 5. Start isolated API and production preview servers on available ports, connected across origins, then run browser flows, axe checks, seven viewport widths, offline/PWA and read-only smoke checks. Upload evidence to GitHub Actions.
 6. Deploy the exact tested SHA to Render and wait for its reported `live` status and matching commit. A failed backend deploy stops the workflow.
 7. Use Vercel's pull → build → prebuilt deploy sequence from the repository root, respecting the project's `frontend` root setting.
-8. Check deployed API responses, database readiness, CORS preflight, manifest, SPA deep links and loaded browser screens. These live checks do not create records. Their failure fails the job; automatic rollback is not implemented.
+8. Check deployed API responses, database readiness, CORS preflight, manifest, SPA deep links, loaded browser screens and accessibility, including pending API states. These live checks do not create records. Their failure fails the job; automatic rollback is not implemented.
 
 Production deployments are serialized. Database migration failures stop startup. No database resets or destructive QA suites run against production.
 

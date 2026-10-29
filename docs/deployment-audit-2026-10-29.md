@@ -10,7 +10,7 @@ Scope: backend API operations, scheduling/database logic, frontend logic, core u
 | Backend application line coverage | 98.36% (359/365 statements); route module 100% |
 | Frontend unit/component tests | 24 passed |
 | TypeScript and Vite production build | Passed |
-| Browser workflows, axe, responsive and PWA | 11 passed |
+| Browser workflows, axe, responsive and PWA | 12 passed locally, including the pending-API regression |
 | Read-only browser deployment smoke | 1 passed locally |
 | Read-only endpoint/CORS/deep-link smoke | Passed locally |
 | Clean `npm ci` on Node 22 | Passed |
@@ -38,6 +38,7 @@ Screenshots: [mobile home](screenshots/qa-2026-10-29/home-390.png), [desktop hom
 - Fixed the first-client booking form in an empty database and indefinite appointment loading when no client exists.
 - Aligned frontend name whitespace normalization with the API.
 - Stopped showing “Awaiting confirmation” for completed/no-show dashboard records.
+- A subsequent live-site run exposed invalid ARIA naming on the transient loading skeleton. Added its status role, a deterministic pending-API accessibility regression test, and read-only accessibility checks after every production deployment.
 - Avoided sending unnecessary JSON headers on GET requests and allowed a 60-second request budget for a sleeping demo backend.
 - Updated affected Router, Zod/resolver, Vitest/PWA and pytest dependencies, and added the explicit Testing Library DOM dependency required for reproducible installation.
 - Added a build-time guard against publishing a Vercel frontend with a missing/relative backend URL.

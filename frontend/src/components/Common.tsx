@@ -129,7 +129,12 @@ export function ErrorState({
 }
 export function LoadingSkeleton() {
   return (
-    <Stack spacing={5} aria-label="Loading appointments" aria-busy="true">
+    <Stack
+      spacing={5}
+      role="status"
+      aria-label="Loading appointments"
+      aria-busy="true"
+    >
       <Skeleton h="30px" w="50%" rounded="lg" />
       <Skeleton h="180px" rounded="2xl" />
       <Skeleton h="180px" rounded="2xl" />
